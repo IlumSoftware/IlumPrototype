@@ -16,22 +16,14 @@ class Player : public sf::Drawable , public ActionTarget<int>
         void setPosition(Args&& ... args);
         void update(sf::Time deltaTime);
         void processEvents();
-
-
-        //enum PlayerInputs {Up,Left,Right};
         static void setDefaultsInputs();
-
 
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-        //sf::RectangleShape _shape;
         sf::Sprite          _ship;
         sf::Vector2f _velocity;
-
         bool _isMoving;
         int _rotation;
-
-       // static ActionMap<int> _playerInputs;
 };
 #include "Player.tpl"
 #endif // PLAYER_H

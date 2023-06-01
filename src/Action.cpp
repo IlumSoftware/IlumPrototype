@@ -1,17 +1,6 @@
 #include "Action.h"
 
-/*
-Action::Action(const Action& other) : _type(other._type)
-{
-    std::memcpy(&_event,&other._event,sizeof(sf::Event));
-}
-Action& Action::operator=(const Action& other)
-{
-    std::memcpy(&_event,&other._event,sizeof(sf::Event));
-    _type = other._type;
-    return *this;
-}
-*/
+
 Action::Action(const sf::Keyboard::Key& key,int type) : _type(type)
 {
     _event.type = sf::Event::EventType::KeyPressed;

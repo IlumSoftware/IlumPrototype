@@ -2,7 +2,12 @@
 #define GAME_H
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-class Game
+#include "Menu.h"
+#include "Configuration.h"
+#include "ActionTarget.h"
+#include <SFML/Window.hpp>
+
+class Game : public ActionTarget<int>
 {
     public:
         Game(const Game&) = delete;
@@ -14,11 +19,19 @@ class Game
 
         void processEvents();
         void update(sf::Time deltaTime);
-
+        void initGui();
+        void initGame();
         void render();
         sf::RenderWindow _window;
-        //sf::CircleShape _player;
+        Menu _mainMenu;
         Player _player;
+
+        enum Status {
+            StatusMainMenu,
+            StatusGame
+            //StatusPaused,
+            //StatusExit
+        } _status;
 };
 
 #endif // GAME_H

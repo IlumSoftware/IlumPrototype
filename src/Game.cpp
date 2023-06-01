@@ -1,12 +1,13 @@
 #include "Game.h"
 #include "Player.h"
+#include "Menu.h"
 
-Game::Game() : _window(sf::VideoMode(800, 600),"02_Game_Archi"), _player()
+Game::Game() : ActionTarget(Configuration::playerInputs), _window(sf::VideoMode(800, 600),"War Ships"), _player(), _mainMenu()
 {
-    //_player.setFillColor(sf::Color::Blue);
-    //_player.setPosition(10, 20);
-    //_player.setDefaultsInputs();
+   _status = Status::StatusMainMenu;
     _player.setPosition(100,100);
+    _mainMenu.setPosition(100,100);
+    initGui();
 }
 
 void Game::run(int minimum_frame_per_seconds)
@@ -25,6 +26,26 @@ void Game::run(int minimum_frame_per_seconds)
         render();
     }
 }
+
+void Game::initGui()
+{
+   _mainMenu.bind(Configuration::GuiInputs::MouseBLeft,[this](const sf::Event& event){
+                     if (this->_mainMenu.isSelected((sf::Vector2f)sf::Mouse::getPosition(this->_window)))
+                     {
+                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                         {
+                             _status = Status::StatusGame;
+                                initGame();
+                         }
+                         else
+                         {
+                              _status = Status::StatusMainMenu;
+                         }
+                     }
+                   });
+}
+
+
 void Game::processEvents() {
     sf::Event event;
     while(_window.pollEvent(event)) {
@@ -32,23 +53,62 @@ void Game::processEvents() {
         {
             _window.close();
         }
-        else if (event.type == sf::Event::KeyPressed)
-        {
-            if (event.key.code == sf::Keyboard::Escape)
-                _window.close();
+       else if (event.type == sf::Event::KeyPressed or (event.type == sf::Event::MouseButtonPressed and _status == Status::StatusMainMenu)){
+            switch(_status)
+            {
+                case StatusMainMenu:
+                {
+                    _mainMenu.processEvent(event);
+                }break;
+                case StatusGame :
+                {
+                    ActionTarget::processEvent(event);
+                }break;
+                default : break;
+            }
         }
 
+    }
+    switch(_status)
+    {
+        case StatusMainMenu:
+        {
+            _mainMenu.processEvents();
+        }break;
+        case StatusGame :
+        {
+            ActionTarget::processEvents();
+        }break;
+        default : break;
     }
     _player.processEvents();
 }
 
 void Game::update(sf::Time deltaTime){
+    _mainMenu.update(deltaTime);
     _player.update(deltaTime);
 }
 
 void Game::render() {
     _window.clear();
-    _window.draw(_player);
+    switch(_status)
+    {
+        case StatusMainMenu:
+        {
+            _window.draw(_mainMenu);
+        }break;
+        case StatusGame :
+        {
+            _window.draw(_player);
+
+        }break;
+        default : break;
+    }
+
     _window.display();
+}
+
+void Game::initGame()
+{
 }
 
