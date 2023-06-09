@@ -9,7 +9,12 @@ Menu::Menu() : ActionTarget(Configuration::guiInputs)
 {
 
     //Add all element (box, textbox, etc...)
-      _button.setTexture(Configuration::textures.get(Configuration::Textures::StartButton));
+      //_button.setTexture(Configuration::textures.get(Configuration::Textures::StartButton));
+    _btSingle.setTexture(Configuration::textures.get(Configuration::Textures::ButtonSinglePlayer));
+    _btMulti.setTexture(Configuration::textures.get(Configuration::Textures::ButtonMultiPlayer));
+    _btQuit.setTexture(Configuration::textures.get(Configuration::Textures::ButtonQuit));
+      //BACKGROUND
+    _background.setTexture(Configuration::textures.get(Configuration::Textures::BackgroundMainMenu));
 
     //bind all mouse events
     bind(Configuration::GuiInputs::Escape,[this](const sf::Event&){_isActive = false;});
@@ -26,7 +31,11 @@ void Menu::update(sf::Time deltaTime)
 
 void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(_button,states);
+    target.draw(_background,states);
+    target.draw(_btSingle,states);
+    target.draw(_btMulti,states);
+    target.draw(_btQuit,states);
+    //target.draw(_button,states);
     //target.draw de tous les elements du menu
 }
 
@@ -40,7 +49,8 @@ void Menu::processEvent(sf::Event event)
 }
 bool Menu::isSelected(sf::Vector2f vPos)
 {
-    _rect = _button.getGlobalBounds();
+    //_rect = _button.getGlobalBounds();
+    _rect = _btMulti.getGlobalBounds();
     if (_rect.contains(vPos))
     {
         return true;
@@ -49,4 +59,15 @@ bool Menu::isSelected(sf::Vector2f vPos)
     {
         return false;
     }
+}
+
+void Menu::setWindowSize(sf::Vector2u _size){
+    w_size = _size;
+    std::cout << "Window size X: " << w_size.x << " Y: " << w_size.y << std::endl;
+      //Position des objets
+   // _btSingle.setPosition((w_size.y/2) - (_btSingle.getLocalBounds().width/2),w_size.y/4);
+    _btSingle.setPosition(w_size.y/2,w_size.y/4.5);
+    _btMulti.setPosition(w_size.y/2,w_size.y/3);
+    _btQuit.setPosition(w_size.y/2,w_size.y/1.5);
+
 }

@@ -21,15 +21,21 @@ class Menu : public sf::Drawable , public ActionTarget<int>
 
         static void setDefaultsInputs();
         bool isSelected(sf::Vector2f vPos);
+        void setWindowSize(sf::Vector2u _size);
 
 
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         bool _isActive;
-
-        sf::Sprite _button;
+        sf::Sprite _background; // Image of background
+        sf::Sprite _btSingle;
+        sf::Sprite _btMulti;
+        sf::Sprite _btQuit;
         sf::FloatRect _rect;
         bool _isClick = false;
+
+        // Window information
+        sf::Vector2u w_size;   // get from target
 
         //Add all menu's elements
 };

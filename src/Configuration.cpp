@@ -6,6 +6,8 @@ ResourceManager<sf::Font,int> Configuration::fonts;
 ResourceManager<sf::Texture,int> Configuration::textures;
 ActionMap<int> Configuration::playerInputs;
 ActionMap<int> Configuration::guiInputs;
+ActionMap<int> Configuration::menuInputs;
+
 
 void Configuration::initialize()
 {
@@ -13,12 +15,18 @@ void Configuration::initialize()
     initFonts();
     initPlayerInputs();
     initGuiInputs();
+    initMenuInputs();
 }
 
 void Configuration::initTextures()
 {
     textures.load(Textures::Player,"media/Player/Ship.png");
-    textures.load(Textures::StartButton,"media/Menu/StartButton.png");
+    //textures.load(Textures::StartButton,"media/Menu/StartButton.png");
+    textures.load(Textures::ButtonSinglePlayer,"media/Menu/SinglePlayer.png");
+    textures.load(Textures::ButtonMultiPlayer,"media/Menu/MultiPlayer.png");
+    textures.load(Textures::ButtonQuit,"media/Menu/Quit.png");
+    textures.load(Textures::BackgroundMainMenu,"media/Menu/BackgroundMainMenu.png");
+    textures.load(Textures::BackgroundMenuNetwork,"media/Menu/BackgroundMenuNetwork.png");
 }
 
 void Configuration::initFonts()
@@ -39,4 +47,11 @@ void Configuration::initGuiInputs()
     guiInputs.map(GuiInputs::Enter,Action(sf::Keyboard::Enter));
     guiInputs.map(GuiInputs::MouseBLeft,Action(sf::Mouse::Left));
 
+}
+
+void Configuration::initMenuInputs()
+{
+    menuInputs.map(MenuInputs::MouseLeft,Action(sf::Mouse::Left));
+
+    menuInputs.map(MenuInputs::EnterN,Action(sf::Keyboard::Enter));
 }

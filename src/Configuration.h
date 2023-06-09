@@ -13,10 +13,18 @@ class Configuration
         Configuration(const Configuration&) = delete;
         Configuration& operator=(const Configuration&) = delete;
 
-        enum Textures : int {Player,StartButton};
+        enum Textures : int {
+            Player,
+            StartButton,
+            BackgroundMainMenu,
+            BackgroundMenuNetwork,
+            ButtonSinglePlayer,
+            ButtonMultiPlayer,
+            ButtonQuit
+            };
         static ResourceManager<sf::Texture,int> textures;
 
-        enum Fonts : int {Menu};
+        enum Fonts : int {Menu,MenuNetwork};
         static ResourceManager<sf::Font,int> fonts;
 
         enum PlayerInputs : int {Up,Left,Right};
@@ -29,6 +37,12 @@ class Configuration
             };
         static ActionMap<int> guiInputs;
 
+        enum MenuInputs : int {
+                MouseLeft,
+                EnterN
+            };
+        static ActionMap<int> menuInputs;
+
         static void initialize();
 
     private:
@@ -37,6 +51,7 @@ class Configuration
 
         static void initPlayerInputs();
         static void initGuiInputs();
+        static void initMenuInputs();
 };
 #endif
 
