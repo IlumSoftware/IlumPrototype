@@ -30,17 +30,21 @@ class Game : public ActionTarget<int>
         int resY = 768; // Windiw Height
         sf::RenderWindow _window;
         sf::View view;
+        Status status;
         Menu _mainMenu;
         MenuNetwork _networkMenu;
         Player _player;
 
-        enum Status {
+/*
+        enum Status :int{
             StatusMainMenu,
             StatusGame,
             StatusNetworkMenu
             //StatusPaused,
             //StatusExit
         } _status;
+        */
+        int _status;
 };
 
 #endif // GAME_H
