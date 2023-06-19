@@ -4,19 +4,11 @@
 #include <iostream>
 
 
-MenuNetwork::MenuNetwork() : ActionTarget(Configuration::menuInputs),m_hasfocus(true),m_size(50)
+MenuNetwork::MenuNetwork(Status& status) : ActionTarget(Configuration::menuInputs),m_hasfocus(true),m_size(50)
 //MenuNetwork::MenuNetwork()
 {
 
     //Add all element (box, textbox, etc...)
-    //_tfHostname.setFont(Configuration::fonts.get(Configuration::Fonts::Menu));
-    //_tfHostname.setPosition(10,10);
-    //_tfHostname.setString("Hostname");
-   // m_hasfocus = false;
-    //m_hasfocus = true;
-   // m_size = 50;
-   // m_text = "Hostname";
-
     //FIELDS
     _lbHostname.setFont(Configuration::fonts.get(Configuration::Fonts::Menu));
     _lbHostname.setCharacterSize(22);                                            // Label HOSTNAME
@@ -25,10 +17,6 @@ MenuNetwork::MenuNetwork() : ActionTarget(Configuration::menuInputs),m_hasfocus(
     _tfHostname.setFont(Configuration::fonts.get(Configuration::Fonts::Menu));     // HOSTNAME of SERVER
     _tfHostname.setCharacterSize(22);
     _tfHostname.setString("|_________________________________________________|"); // 50 chars with | to set correct size of rectangleShape
-    //_rectShapeHostname.setPosition(100,100);
-    //_rectShapeHostname.setSize(sf::Vector2f(100,20));
-
-    //_rectShapeHostname.setPosition(_tfHostname.getPosition());
     _rectShapeHostname.setSize(sf::Vector2f(_tfHostname.getLocalBounds().width+10,_tfHostname.getLocalBounds().height+10));
 
     _rectShapeHostname.setFillColor(sf::Color(128,128,128,128));

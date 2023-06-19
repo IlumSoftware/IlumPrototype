@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <SFML/Graphics.hpp>
 #include "ActionTarget.h"
+#include "ParticleSystem.h"
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
@@ -24,6 +25,7 @@ class Player : public sf::Drawable , public ActionTarget<int>
         sf::Vector2f _velocity;
         bool _isMoving;
         int _rotation;
+        ParticleSystem particles;
 };
 #include "Player.tpl"
 #endif // PLAYER_H

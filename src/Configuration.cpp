@@ -21,10 +21,16 @@ void Configuration::initialize()
 void Configuration::initTextures()
 {
     textures.load(Textures::Player,"media/Player/Ship.png");
-    //textures.load(Textures::StartButton,"media/Menu/StartButton.png");
+
     textures.load(Textures::ButtonSinglePlayer,"media/Menu/SinglePlayer.png");
+    textures.load(Textures::ButtonSinglePlayer2,"media/Menu/SinglePlayer2.png");
+
     textures.load(Textures::ButtonMultiPlayer,"media/Menu/MultiPlayer.png");
+    textures.load(Textures::ButtonMultiPlayer2,"media/Menu/MultiPlayer2.png");
+
     textures.load(Textures::ButtonQuit,"media/Menu/Quit.png");
+    textures.load(Textures::ButtonQuit2,"media/Menu/Quit2.png");
+
     textures.load(Textures::BackgroundMainMenu,"media/Menu/BackgroundMainMenu.png");
     textures.load(Textures::BackgroundMenuNetwork,"media/Menu/BackgroundMenuNetwork.png");
 }

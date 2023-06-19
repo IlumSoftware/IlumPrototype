@@ -1,18 +1,15 @@
 #include "Game.h"
 #include "Player.h"
 #include "Menu.h"
+#include "Status.h"
 
-//Game::Game() : ActionTarget(Configuration::playerInputs), _window(sf::VideoMode(800, 600),"War Ships"), _player(), _mainMenu(), _networkMenu()
-Game::Game() : ActionTarget(Configuration::playerInputs),_window(sf::VideoMode(resX, resY),"War Ships"), _player(), _mainMenu(), _networkMenu()
+Game::Game() : ActionTarget(Configuration::playerInputs),_window(sf::VideoMode(resX, resY),"War Ships"),status(), _player(), _mainMenu(status), _networkMenu(status)
 {
-    //resX = 800;
-    //resY = 600;
-
     view.setSize( resX, resY );
     view.setCenter( view.getSize().x / 2, view.getSize().y / 2 );
     view = getLetterboxView( view, resX, resY );
 
-    _status = Status::StatusMainMenu;
+    _status = Status::CurrentStatus::MainMenu;
     _player.setPosition(100,100);
     _mainMenu.setPosition(0,0);
     _networkMenu.setPosition(0,0);
@@ -40,23 +37,42 @@ void Game::initGui()
 {
    _mainMenu.setWindowSize(this->_window.getSize());
    _mainMenu.bind(Configuration::GuiInputs::MouseBLeft,[this](const sf::Event& event){
-                     if (this->_mainMenu.isSelected((sf::Vector2f)sf::Mouse::getPosition(this->_window)))
-                     {
-                         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                         {
-                             // Comment for testing MenuNetwork
-                             //_status = Status::StatusGame;
-                             //   initGame();
+                    std::cout << "main menu bind" << std::endl;
+                    //status.setCurrentButton(this->_mainMenu.whichButton((sf::Vector2f)sf::Mouse::getPosition(this->_window)));
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(_window);
+                    sf::Vector2f worldPos = _window.mapPixelToCoords(pixelPos);
+                    status.setCurrentButton(_mainMenu.whichButton(worldPos));
+                    //status.setCurrentButton(_mainMenu.whichButton((sf::Vector2f)sf::Mouse::getPosition(_window)));
+                    //status.setCurrentButton(this->_mainMenu.whichButton((sf::Vector2f)sf::Mouse::getPosition()));
+                    switch(status.getCurrentButton())
+                    {
+                        case Status::CurrentButton::BClickSinglePlayer:
+                        {
+                                status.setCurrentStatus(Status::CurrentStatus::SingleGame);
+                                _status = status.getCurrentStatus();
+                        }break;
+                        case Status::CurrentButton::BClickMultiPlayer:
+                        {
+                                //status.setCurrentStatus(Status::CurrentStatus::MultiGame);
+                                status.setCurrentStatus(Status::CurrentStatus::NetworkMenu);
+                                _status = status.getCurrentStatus();
+                                initNetworkMenu();
+                        }break;
+                        case Status::CurrentButton::BClickQuit:
+                        {
+                                status.setCurrentStatus(Status::CurrentStatus::Quit);
+                                _status = status.getCurrentStatus();
+                        }break;
+                        case Status::CurrentButton::Nothing:
+                        {
+                                status.setCurrentStatus(Status::CurrentStatus::MainMenu);
+                                _status = status.getCurrentStatus();
+                        }break;
+                    }
+                    //_mainMenu.updateButtons();
 
-                             _status = Status::StatusNetworkMenu;
-                             initNetworkMenu();
-                         }
-                         else
-                         {
-                              _status = Status::StatusMainMenu;
-                         }
-                     }
-                   });
+    });
+
 }
 
 void Game::initNetworkMenu()
@@ -71,14 +87,17 @@ void Game::initNetworkMenu()
                              //_status = Status::StatusGame;
                              //   initGame();
 
-                              _status = Status::StatusMainMenu;
+                             // _status = Status::StatusMainMenu;
+                             status.setCurrentStatus(Status::CurrentStatus::MainMenu);
 
                          }
                          else
                          {
-                             _status = Status::StatusNetworkMenu;
+                            // _status = Status::StatusNetworkMenu;
+                             status.setCurrentStatus(Status::CurrentStatus::NetworkMenu);
 
                          }
+                         _status = status.getCurrentStatus();
                      }
     });
 }
@@ -86,56 +105,82 @@ void Game::initNetworkMenu()
 void Game::processEvents() {
     sf::Event event;
     while(_window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed or status.getCurrentStatus() == Status::CurrentStatus::Quit)
         {
             _window.close();
         }
+        else if (event.type == sf::Event::MouseMoved){
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(_window);
+            sf::Vector2f worldPos = _window.mapPixelToCoords(pixelPos);
+            _mainMenu.updateButtons(worldPos);
+        }
         else if (event.type == sf::Event::Resized){
                 view = getLetterboxView( view, event.size.width, event.size.height );
+                _mainMenu.setWindowSize((sf::Vector2u)view.getSize());
+                _networkMenu.setWindowSize((sf::Vector2u)view.getSize());
+
         }
-        else if (event.type == sf::Event::KeyPressed or (event.type == sf::Event::MouseButtonPressed and _status == Status::StatusMainMenu) or (event.type == sf::Event::TextEntered and _status == Status::StatusNetworkMenu)){
+        else if (event.type == sf::Event::KeyPressed or (event.type == sf::Event::MouseButtonPressed and _status == Status::CurrentStatus::MainMenu) or (event.type == sf::Event::TextEntered and _status == Status::CurrentStatus::NetworkMenu)){
+
             switch(_status)
             {
-                case StatusMainMenu:
+                case Status::CurrentStatus::MainMenu:
                 {
                     _mainMenu.processEvent(event);
                 }break;
-                case StatusNetworkMenu:
+                case Status::CurrentStatus::NetworkMenu:
                 {
                     _networkMenu.processEvent(event);
                 }break;
-                case StatusGame :
+                case Status::CurrentStatus::SingleGame :
                 {
                     ActionTarget::processEvent(event);
                 }break;
                 default : break;
             }
+            std::cout << "Status in Game: " << status.getCurrentStatus() << std::endl;
         }
 
     }
     switch(_status)
     {
-        case StatusMainMenu:
+        case Status::CurrentStatus::MainMenu:
         {
             _mainMenu.processEvents();
         }break;
-        case StatusNetworkMenu:
+        case Status::CurrentStatus::NetworkMenu:
         {
             _networkMenu.processEvents();
         }break;
-        case StatusGame :
+        case Status::CurrentStatus::SingleGame :
         {
-            ActionTarget::processEvents();
+            //ActionTarget::processEvents();
+            _player.processEvents();
         }break;
         default : break;
     }
-    _player.processEvents();
 }
 
 void Game::update(sf::Time deltaTime){
-    _mainMenu.update(deltaTime);
-    _networkMenu.update(deltaTime);
-    _player.update(deltaTime);
+
+    switch(_status)
+    {
+        case Status::CurrentStatus::MainMenu:
+        {
+            _mainMenu.update(deltaTime);
+
+        }break;
+        case Status::CurrentStatus::NetworkMenu:
+        {
+            _networkMenu.update(deltaTime);
+
+        }break;
+        case Status::CurrentStatus::SingleGame :
+        {
+            _player.update(deltaTime);
+        }break;
+        default : break;
+    }
 }
 
 void Game::render() {
@@ -143,16 +188,16 @@ void Game::render() {
     _window.setView(view);
     switch(_status)
     {
-        case StatusMainMenu:
+        case Status::CurrentStatus::MainMenu:
         {
             _window.draw(_mainMenu);
         }break;
-        case StatusGame :
+        case Status::CurrentStatus::SingleGame :
         {
             _window.draw(_player);
 
         }break;
-        case StatusNetworkMenu:
+        case Status::CurrentStatus::NetworkMenu:
         {
             _window.draw(_networkMenu);
         }break;
@@ -160,6 +205,7 @@ void Game::render() {
     }
 
     _window.display();
+
 }
 
 void Game::initGame()

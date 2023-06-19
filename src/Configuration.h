@@ -1,5 +1,5 @@
-#ifndef CONFIGURATION_HPP
-#define CONFIGURATION_HPP
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
 
 #include <SFML/Graphics.hpp> //Texture
 
@@ -15,12 +15,14 @@ class Configuration
 
         enum Textures : int {
             Player,
-            StartButton,
             BackgroundMainMenu,
             BackgroundMenuNetwork,
             ButtonSinglePlayer,
             ButtonMultiPlayer,
-            ButtonQuit
+            ButtonQuit,
+            ButtonSinglePlayer2,
+            ButtonMultiPlayer2,
+            ButtonQuit2
             };
         static ResourceManager<sf::Texture,int> textures;
 

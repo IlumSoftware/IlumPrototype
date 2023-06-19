@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include "ActionTarget.h"
+#include "Status.h"
 #include <string>
 #include <iostream>
 
@@ -15,7 +16,7 @@ class MenuNetwork : public sf::Drawable , public ActionTarget<int>
     public:
         MenuNetwork(const MenuNetwork&) = delete;
         MenuNetwork& operator=(const MenuNetwork&) = delete;
-        MenuNetwork();
+        MenuNetwork(Status& status);
 
 
         template<typename ... Args>
@@ -33,7 +34,7 @@ class MenuNetwork : public sf::Drawable , public ActionTarget<int>
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         bool _isActive;
-
+        Status status;
         sf::Sprite _background; // Image of background
 
         sf::Text _lbHostname;     // Label HOSTNAME
